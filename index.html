@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photonic Noise Player & Visualizer</title>
+    <!-- Lucide Icons for clean UI elements -->
+    <script src="https://unpkg.com"></script>
+    <style>
+        :root {
+            --bg-main: #0a0a0a;
+            --bg-card: #121212;
+            --accent: #1db954; /* Streaming Green */
+            --text-main: #ffffff;
+            --text-muted: #b3b3b3;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .player-container {
+            background-color: var(--bg-card);
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.7);
+            width: 100%;
+            max-width: 400px;
+            overflow: hidden;
+            padding: 24px;
+        }
+
+        .track-info {
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .art-visualizer-container {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            margin: 0 auto 20px auto;
+        }
+
+        .album-art {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #2a2a2a, #151515);
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-muted);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        #visualizer-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            border-radius: 12px;
+            pointer-events: none;
+        }
+
+        .track-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .track-artist {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .progress-area {
+            margin-bottom: 20px;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 6px;
+            background-color: #333;
+            border-radius: 3px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background-color: var(--accent);
+            border-radius: 3px;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .time-box {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .btn {
+            background: none;
+            border: none;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: color 0.2s, transform 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn:hover {
+            color: var(--accent);
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn-play-pause {
+            background-color: var(--text-main);
+            color: var(--bg-main);
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+        }
+
+        .btn-play-pause:hover {
+            background-color: var(--accent);
+            color: var(--text-main);
+        }
+
+        .volume-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 24px;
+            color: var(--text-muted);
+        }
+
+        .volume-slider {
+            flex: 1;
+            accent-color: var(--accent);
+            cursor: pointer;
+            height: 4px;
+        }
+
+        .playlist {
+            border-top: 1px solid #222;
+            padding-top: 15px;
+            max-height: 220px;
+            overflow-y: auto;
+        }
+
+        .playlist h3 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+
+        .track-item {
+            display: flex;
+            flex-direction: column;
+            padding: 8px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .track-item:hover {
+            background-color: #1a1a1a;
+        }
+
+        .track-item.active {
+            color: var(--accent);
+            background-color: #132418;
+            font-weight: bold;
+        }
+
+        .track-item-genre {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+            font-weight: normal;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="player-container">
+        <audio id="audio-element"></audio>
+
+        <div class="track-info">
+            <div class="art-visualizer-container">
+                <div class="album-art">
+                    <i data-lucide="music" size="64"></i>
+                </div>
+                <canvas id="visualizer-canvas"></canvas>
+            </div>
+            <div class="track-title" id="ui-title">Select a Track</div>
+            <div class="track-artist" id="ui-artist">Photonic Noise</div>
+        </div>
+
+        <div class="progress-area">
+            <div class="progress-bar-container" id="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <div class="time-box">
+                <span id="time-current">0:00</span>
+                <span id="time-duration">0:00</span>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn" id="btn-prev" title="Previous"><i data-lucide="skip-back" size="24"></i></button>
+            <button class="btn btn-play-pause" id="btn-play" title="Play/Pause"><i data-lucide="play" size="28" id="play-icon"></i></button>
+            <button class="btn" id="btn-next" title="Next"><i data-lucide="skip-forward" size="24"></i></button>
+        </div>
+
+        <div class="volume-container">
+            <i data-lucide="volume-2" size="18"></i>
+            <input type="range" class="volume-slider" id="volume-slider" min="0" max="1" step="0.05" value="0.7">
+        </div>
+
+        <div class="playlist">
+            <h3>Photonic Noise Queue</h3>
+            <div id="playlist-container"></div>
+        </div>
+    </div>
+
+    <script>
+        /**************************************************************
+         * MASTER TRACKLIST ARRAY (ALL 23 SONGS)
+         * Updated source tracks to point specifically to your 
+         * "Photonic Noise" folder name!
+         **************************************************************/
+        const trackList = [
+            { title: "Intro 1", genre: "Spoken Word / Ambient", src: "Photonic Noise/intro1.mp3" },
+            { title: "The Future is RXD", genre: "Psychedelic Trance / Funk", src: "Photonic Noise/The future is RXD.mp3" },
+            { title: "Back to G", genre: "Trance / Dubstep / Atmospheric", src: "Photonic Noise/Back to G.mp3" },
+            { title: "Radiant Blues", genre: "Chicago Blues / Slow", src: "Photonic Noise/Radiant blues.mp3" },
+            { title: "Glyph Mining", genre: "Synthwave / Cyberpunk", src: "Photonic Noise/Glyph mining.mp3" },
+            { title: "Radiant oh Radiant", genre: "Melodic Techno / Choral", src: "Photonic Noise/Radiant oh Radiant.mp3" },
+            { title: "Rad Moroder", genre: "80s Disco Synth / Electro", src: "Photonic Noise/Rad Moroder.mp3" },
+            { title: "Radiante Futuro 2", genre: "Italian Electro-Pop", src: "Photonic Noise/Radiante Futuro2.mp3" },
+            { title: "Jingle Glyphs 4", genre: "IDM / Glitch-Hop", src: "Photonic Noise/Jingle glyphs4.mp3" },
+            { title: "Radiant's Rising", genre: "Epic Orchestrational Trance", src: "Photonic Noise/Radiant's Rising.mp3" },
+            { title: "RADDD", genre: "Hardstyle / Bounce", src: "Photonic Noise/RADDD.mp3" },
+            { title: "Peer to Peer", genre: "Deep House / Chillout", src: "Photonic Noise/Peer to peer.mp3" },
+            { title: "Radiant Lovers", genre: "Lo-Fi Beats / Synth-Pop", src: "Photonic Noise/Radiant lovers.mp3" },
+            { title: "Radiant Price", genre: "Industrial / EBM", src: "Photonic Noise/Radiant Price.mp3" },
+            { title: "Radiant Army", genre: "Phonk / Aggressive Bass", src: "Photonic Noise/Radiant army.mp3" },
+            { title: "Radfire", genre: "Drum & Bass / Liquid", src: "Photonic Noise/Radfire.mp3" },
+            { title: "Radfire Dubstep", genre: "Heavy Dubstep / Brostep", src: "Photonic Noise/Radfiredubstep.mp3" },
+            { title: "Radiant Is Hardcore 1", genre: "Happy Hardcore / UK Hardcore", src: "Photonic Noise/radiant Is Hardcore1.mp3" },
