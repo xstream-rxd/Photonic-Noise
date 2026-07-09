@@ -140,6 +140,76 @@
       background-position: center;
       background-attachment: fixed;
     }
+
+    /* Fullscreen Active Classes */
+    body.fullscreen-active {
+      overflow: hidden !important;
+    }
+    body.fullscreen-active #visualizer-container {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      z-index: 40 !important;
+      border-radius: 0 !important;
+      border: none !important;
+    }
+    body.fullscreen-active #audio-warning-overlay,
+    body.fullscreen-active #audio-error-overlay {
+      z-index: 45 !important;
+    }
+    body.fullscreen-active #main-controller-card {
+      position: fixed !important;
+      bottom: 0.75rem !important; /* Kept lower to prevent interference with visualizer */
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      width: calc(100% - 1.5rem) !important;
+      max-width: 680px !important;
+      margin: 0 !important;
+      z-index: 50 !important;
+      background-color: rgba(5, 5, 5, 0.75) !important;
+      backdrop-filter: blur(24px) !important;
+      -webkit-backdrop-filter: blur(24px) !important;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8), 0 0 15px var(--color-glow-shadow) !important;
+      border-color: var(--color-primary-muted) !important;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, bottom 0.4s ease !important;
+    }
+    body.fullscreen-active #main-controller-card.collapsed {
+      transform: translate(-50%, 150%) !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+    @media (max-width: 640px) {
+      body.fullscreen-active #main-controller-card {
+        bottom: 0.5rem !important;
+        width: calc(100% - 1rem) !important;
+        padding: 0.75rem !important;
+        gap: 0.5rem !important;
+      }
+    }
+
+    #btn-collapse-card {
+      display: none;
+    }
+    body.fullscreen-active #btn-collapse-card {
+      display: flex !important;
+    }
+
+    /* Floating Expand Button style */
+    #btn-expand-controls {
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 20px);
+      transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s;
+    }
+    body.fullscreen-active.controls-collapsed #btn-expand-controls {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translate(-50%, 0);
+    }
   </style>
 </head>
 <body class="bg-cyber-bg text-cyber-text font-sans min-h-screen flex flex-col selection:bg-cyber-neon selection:text-black relative">
@@ -211,6 +281,13 @@
                 <span id="label-theme" class="hidden sm:inline">THEME: GREEN</span>
                 <span id="label-theme-mobile" class="sm:hidden">THEME</span>
               </button>
+
+              <!-- Fullscreen Toggle Button -->
+              <button onclick="toggleFullscreenVisualizer()" id="btn-fullscreen-toggle" class="flex items-center gap-1 sm:gap-1.5 px-2 py-1 sm:px-2.5 sm:py-1.5 text-[10px] sm:text-[11px] font-mono rounded-lg bg-black/60 backdrop-blur-md border border-cyber-panelBorder/60 text-cyber-neon hover:text-white hover:bg-cyber-panelLight transition" title="Toggle Fullscreen Visualizer">
+                <i data-lucide="maximize-2" class="w-3 h-3 sm:w-3.5 sm:h-3.5 text-cyber-neon" id="icon-fullscreen"></i>
+                <span id="label-fullscreen" class="hidden sm:inline">FULLSCREEN</span>
+                <span id="label-fullscreen-mobile" class="sm:hidden">FULL</span>
+              </button>
   
               <!-- Mode Switcher -->
               <div class="flex bg-black/60 backdrop-blur-md p-0.5 sm:p-1 rounded-lg border border-cyber-panelBorder gap-0.5 sm:gap-1">
@@ -280,7 +357,12 @@
       </div>
 
       <!-- MAIN CONTROLLER CARD -->
-      <div class="bg-cyber-panel backdrop-blur-xl rounded-[20px] sm:rounded-[24px] border border-cyber-panelBorder p-4 sm:p-5 md:p-6 flex flex-col gap-4 sm:gap-6 shadow-glass-shadow relative overflow-hidden">
+      <div id="main-controller-card" class="bg-cyber-panel backdrop-blur-xl rounded-[20px] sm:rounded-[24px] border border-cyber-panelBorder p-4 sm:p-5 md:p-6 flex flex-col gap-4 sm:gap-6 shadow-glass-shadow relative overflow-hidden">
+        
+        <!-- Collapse Controls Button (visible in Fullscreen) -->
+        <button id="btn-collapse-card" onclick="toggleCollapseCard()" class="absolute top-4 right-4 p-1.5 rounded-lg bg-black/40 border border-cyber-panelBorder/60 text-cyber-muted hover:text-cyber-neon hover:border-cyber-neon/40 transition z-10 hidden items-center justify-center" title="Collapse Controls">
+          <i data-lucide="chevron-down" class="w-4 h-4"></i>
+        </button>
         
         <!-- Track Details Banner -->
         <div class="flex items-center gap-3 sm:gap-4">
@@ -434,6 +516,12 @@
     </div>
   </footer>
 
+  <!-- Floating Expand Controls Button (visible only in fullscreen when card is collapsed) -->
+  <button id="btn-expand-controls" onclick="toggleCollapseCard()" class="fixed bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 bg-black/85 backdrop-blur-md text-cyber-neon border border-cyber-neon/30 hover:border-cyber-neon hover:text-white rounded-full font-mono text-[11px] tracking-widest z-50 shadow-neon-glow flex items-center gap-1.5 cursor-pointer">
+    <i data-lucide="chevron-up" class="w-3.5 h-3.5 text-cyber-neon"></i>
+    <span>SHOW CONTROLS</span>
+  </button>
+
   <!-- PLAYER SYSTEM JAVASCRIPT ENGINE -->
   <script>
     // ----------------------------------------------------
@@ -466,6 +554,7 @@
             { title: "You are Radiant", src: "photonic-noise/You are Radiant.mp3" },
             { title: "Radiant 4th Birthday", src: "photonic-noise/Radiant 4th birthday.mp3" }
         ];
+
     // Player State Variables
     let currentTrackIndex = 0;
     let isPlaying = false;
@@ -617,6 +706,23 @@
       
       // Error handling on audio tag (handles non-existent files)
       audio.addEventListener('error', handleAudioError);
+
+      // Click & Touch events on canvas to trigger interactive particle blasts
+      canvas.addEventListener('mousedown', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        spawnParticles(x, y);
+      });
+
+      canvas.addEventListener('touchstart', (e) => {
+        if (e.touches && e.touches[0]) {
+          const rect = canvas.getBoundingClientRect();
+          const x = e.touches[0].clientX - rect.left;
+          const y = e.touches[0].clientY - rect.top;
+          spawnParticles(x, y);
+        }
+      }, { passive: true });
 
       // Start Dummy Visualizer animation loop (so lines ripple even before playing)
       startVisualizerLoop();
@@ -1147,6 +1253,82 @@
       }
     }
 
+    let isFullscreen = false;
+    let controlsCollapsed = false;
+
+    function toggleCollapseCard() {
+      controlsCollapsed = !controlsCollapsed;
+      const card = document.getElementById('main-controller-card');
+      const body = document.body;
+      
+      if (controlsCollapsed) {
+        card.classList.add('collapsed');
+        body.classList.add('controls-collapsed');
+      } else {
+        card.classList.remove('collapsed');
+        body.classList.remove('controls-collapsed');
+      }
+    }
+
+    function toggleFullscreenVisualizer() {
+      isFullscreen = !isFullscreen;
+      const body = document.body;
+      const fullscreenIcon = document.getElementById('icon-fullscreen');
+      const labelFullscreen = document.getElementById('label-fullscreen');
+      const labelFullscreenMobile = document.getElementById('label-fullscreen-mobile');
+      
+      if (isFullscreen) {
+        body.classList.add('fullscreen-active');
+        if (fullscreenIcon) {
+          fullscreenIcon.setAttribute('data-lucide', 'minimize-2');
+        }
+        if (labelFullscreen) {
+          labelFullscreen.textContent = 'EXIT FULL';
+        }
+        if (labelFullscreenMobile) {
+          labelFullscreenMobile.textContent = 'EXIT';
+        }
+      } else {
+        body.classList.remove('fullscreen-active');
+        if (fullscreenIcon) {
+          fullscreenIcon.setAttribute('data-lucide', 'maximize-2');
+        }
+        if (labelFullscreen) {
+          labelFullscreen.textContent = 'FULLSCREEN';
+        }
+        if (labelFullscreenMobile) {
+          labelFullscreenMobile.textContent = 'FULL';
+        }
+        
+        // Reset controls state to visible when exiting fullscreen
+        controlsCollapsed = false;
+        const card = document.getElementById('main-controller-card');
+        if (card) {
+          card.classList.remove('collapsed');
+        }
+        body.classList.remove('controls-collapsed');
+      }
+      
+      // Re-initialize lucide icons for the changed attribute
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
+      
+      // Trigger canvas resizing
+      resizeCanvas();
+    }
+
+    // Esc key to exit fullscreen, and 'H' key to collapse/expand controls
+    window.addEventListener('keydown', (e) => {
+      if (isFullscreen) {
+        if (e.key === 'Escape') {
+          toggleFullscreenVisualizer();
+        } else if (e.key.toLowerCase() === 'h') {
+          toggleCollapseCard();
+        }
+      }
+    });
+
     function cycleVisualizerTheme() {
       currentThemeIndex = (currentThemeIndex + 1) % visualizerThemes.length;
       updateVisualizerThemeUI();
@@ -1195,6 +1377,43 @@
       renderPlaylist();
     }
 
+    // ----------------------------------------------------
+    // INTERACTIVE PARTICLE ENGINE & STARS (Suggestions 2 & 3)
+    // ----------------------------------------------------
+    let interactiveParticles = [];
+    let backgroundStars = [];
+
+    function initBackgroundStars() {
+      backgroundStars = [];
+      for (let i = 0; i < 45; i++) {
+        backgroundStars.push({
+          x: Math.random(),
+          y: Math.random(),
+          size: Math.random() * 1.5 + 0.4,
+          speedY: Math.random() * 0.12 + 0.04
+        });
+      }
+    }
+
+    function spawnParticles(x, y) {
+      const theme = visualizerThemes[currentThemeIndex];
+      const count = 18;
+      for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 2.5 + 0.8;
+        interactiveParticles.push({
+          x: x,
+          y: y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          radius: Math.random() * 3.5 + 1.5,
+          color: Math.random() > 0.45 ? theme.primary : theme.accent,
+          alpha: 1.0,
+          decay: Math.random() * 0.025 + 0.012
+        });
+      }
+    }
+
     function startVisualizerLoop() {
       if (animationId) {
         cancelAnimationFrame(animationId);
@@ -1224,23 +1443,86 @@
       ctx.fillStyle = 'rgba(5, 7, 5, 0.22)';
       ctx.fillRect(0, 0, width, height);
 
-      // Draw futuristic grids in background
+      // 1. Calculate Bass Intensity for Beat Detection
+      let bassLevel = 0;
+      if (analyserNode && isPlaying) {
+        analyserNode.getByteFrequencyData(dataArray);
+        let bassSum = 0;
+        const bassBinCount = Math.min(10, bufferLength);
+        for (let i = 0; i < bassBinCount; i++) {
+          bassSum += dataArray[i];
+        }
+        bassLevel = bassSum / (bassBinCount * 255 || 1); // 0.0 to 1.0
+      }
+
+      // 2. Draw and Update Background Stars (Beat-reactive)
+      if (backgroundStars.length === 0) {
+        initBackgroundStars();
+      }
+      ctx.shadowBlur = 0;
+      backgroundStars.forEach(star => {
+        // Star floats down, accelerated by bass/beat
+        const currentSpeed = star.speedY * (1.0 + bassLevel * 3.5);
+        star.y += currentSpeed * 0.05;
+        if (star.y > 1.0) {
+          star.y = 0;
+          star.x = Math.random();
+        }
+        
+        const px = star.x * width;
+        const py = star.y * height;
+        const size = star.size * (1.0 + bassLevel * 1.5);
+        
+        ctx.fillStyle = '#ffffff';
+        ctx.globalAlpha = 0.15 + bassLevel * 0.45;
+        ctx.beginPath();
+        ctx.arc(px, py, size, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.globalAlpha = 1.0;
+
+      // 3. Draw futuristic grids in background
       drawHUDGrid(width, height);
 
-      // If user hasn't initialized the analyser yet (or is paused), draw gorgeous ambient placeholder waves
+      // 4. Draw core visualizer graphics
       if (!analyserNode || !isPlaying) {
         drawAmbientWaves(width, height);
-        return;
+      } else {
+        // We have active Web Audio API feedback
+        if (visualizerMode === 'bars') {
+          drawFrequencyBars(width, height);
+        } else if (visualizerMode === 'wave') {
+          drawTimeDomainWave(width, height);
+        } else if (visualizerMode === 'circle') {
+          drawRadialRing(width, height);
+        }
       }
 
-      // We have active Web Audio API feedback
-      if (visualizerMode === 'bars') {
-        drawFrequencyBars(width, height);
-      } else if (visualizerMode === 'wave') {
-        drawTimeDomainWave(width, height);
-      } else if (visualizerMode === 'circle') {
-        drawRadialRing(width, height);
+      // 5. Draw and Update Interactive Particles (drift & decay)
+      ctx.shadowBlur = 0;
+      for (let i = interactiveParticles.length - 1; i >= 0; i--) {
+        const p = interactiveParticles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        
+        // Apply physics deceleration/friction
+        p.vx *= 0.98;
+        p.vy *= 0.98;
+        
+        p.alpha -= p.decay;
+        
+        if (p.alpha <= 0) {
+          interactiveParticles.splice(i, 1);
+          continue;
+        }
+        
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.alpha;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius * (1.0 + bassLevel * 0.6), 0, Math.PI * 2);
+        ctx.fill();
       }
+      ctx.globalAlpha = 1.0;
     }
 
     // Background matrix mesh grid
