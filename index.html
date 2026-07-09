@@ -4,298 +4,111 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Photonic Noise Player & Visualizer</title>
-    <!-- Lucide Icons for clean UI elements -->
     <script src="https://unpkg.com"></script>
     <style>
-        :root {
-            --bg-main: #0a0a0a;
-            --bg-card: #121212;
-            --accent: #1db954; /* Streaming Green */
-            --text-main: #ffffff;
-            --text-muted: #b3b3b3;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .player-container {
-            background-color: var(--bg-card);
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.7);
-            width: 100%;
-            max-width: 400px;
-            overflow: hidden;
-            padding: 24px;
-        }
-
-        .track-info {
-            text-align: center;
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .art-visualizer-container {
-            position: relative;
-            width: 220px;
-            height: 220px;
-            margin: 0 auto 20px auto;
-        }
-
-        .album-art {
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #2a2a2a, #151515);
-            border-radius: 12px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: var(--text-muted);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 1;
-        }
-
-        #visualizer-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 2;
-            border-radius: 12px;
-            pointer-events: none;
-        }
-
-        .track-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-            margin-bottom: 4px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .track-artist {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .progress-area {
-            margin-bottom: 20px;
-        }
-
-        .progress-bar-container {
-            width: 100%;
-            height: 6px;
-            background-color: #333;
-            border-radius: 3px;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .progress-bar {
-            width: 0%;
-            height: 100%;
-            background-color: var(--accent);
-            border-radius: 3px;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-
-        .time-box {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: 8px;
-        }
-
-        .controls {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-
-        .btn {
-            background: none;
-            border: none;
-            color: var(--text-main);
-            cursor: pointer;
-            transition: color 0.2s, transform 0.1s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .btn:hover {
-            color: var(--accent);
-        }
-
-        .btn:active {
-            transform: scale(0.95);
-        }
-
-        .btn-play-pause {
-            background-color: var(--text-main);
-            color: var(--bg-main);
-            width: 54px;
-            height: 54px;
-            border-radius: 50%;
-        }
-
-        .btn-play-pause:hover {
-            background-color: var(--accent);
-            color: var(--text-main);
-        }
-
-        .volume-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 24px;
-            color: var(--text-muted);
-        }
-
-        .volume-slider {
-            flex: 1;
-            accent-color: var(--accent);
-            cursor: pointer;
-            height: 4px;
-        }
-
-        .playlist {
-            border-top: 1px solid #222;
-            padding-top: 15px;
-            max-height: 220px;
-            overflow-y: auto;
-        }
-
-        .playlist h3 {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-muted);
-            margin-bottom: 10px;
-        }
-
-        .track-item {
-            display: flex;
-            flex-direction: column;
-            padding: 8px 10px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            margin-bottom: 4px;
-            transition: background-color 0.2s;
-        }
-
-        .track-item:hover {
-            background-color: #1a1a1a;
-        }
-
-        .track-item.active {
-            color: var(--accent);
-            background-color: #132418;
-            font-weight: bold;
-        }
-
-        .track-item-genre {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-top: 2px;
-            font-weight: normal;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+        :root { --bg: #0a0a0a; --card: #121212; --accent: #1db954; --text: #fff; --muted: #b3b3b3; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; }
+        body { background: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .player { background: var(--card); border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.7); width: 100%; max-width: 400px; padding: 24px; }
+        .art-box { position: relative; width: 200px; height: 200px; margin: 0 auto 20px auto; }
+        .art { width: 100%; height: 100%; background: linear-gradient(135deg, #2a2a2a, #151515); border-radius: 12px; display: flex; justify-content: center; align-items: center; color: var(--muted); position: absolute; z-index: 1; }
+        canvas { position: absolute; width: 100%; height: 100%; z-index: 2; border-radius: 12px; pointer-events: none; }
+        .title { text-align: center; font-size: 1.3rem; font-weight: 700; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .artist { text-align: center; font-size: 0.85rem; color: var(--muted); margin-bottom: 15px; text-transform: uppercase; }
+        .p-bg { width: 100%; height: 6px; background: #333; border-radius: 3px; cursor: pointer; position: relative; margin-bottom: 8px; }
+        .p-fill { width: 0%; height: 100%; background: var(--accent); border-radius: 3px; position: absolute; }
+        .time { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--muted); margin-bottom: 20px; }
+        .ctrls { display: flex; justify-content: space-around; align-items: center; margin-bottom: 24px; }
+        .btn { background: none; border: none; color: var(--text); cursor: pointer; display: flex; align-items: center; }
+        .btn:hover { color: var(--accent); }
+        .play-btn { background: var(--text); color: var(--card); width: 50px; height: 50px; border-radius: 50%; justify-content: center; }
+        .play-btn:hover { background: var(--accent); color: var(--text); }
+        .vol { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; color: var(--muted); }
+        .vol-slider { flex: 1; accent-color: var(--accent); cursor: pointer; height: 4px; }
+        .list { border-top: 1px solid #222; padding-top: 15px; max-height: 180px; overflow-y: auto; }
+        .list h3 { font-size: 0.8rem; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+        .item { padding: 8px 10px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; margin-bottom: 4px; }
+        .item:hover { background: #1a1a1a; }
+        .item.active { color: var(--accent); background: #132418; font-weight: bold; }
     </style>
 </head>
 <body>
-
-    <div class="player-container">
-        <audio id="audio-element"></audio>
-
-        <div class="track-info">
-            <div class="art-visualizer-container">
-                <div class="album-art">
-                    <i data-lucide="music" size="64"></i>
-                </div>
-                <canvas id="visualizer-canvas"></canvas>
-            </div>
-            <div class="track-title" id="ui-title">Select a Track</div>
-            <div class="track-artist" id="ui-artist">Photonic Noise</div>
+    <div class="player">
+        <audio id="audio"></audio>
+        <div class="art-box"><div class="art"><i data-lucide="music" size="56"></i></div><canvas id="canvas"></canvas></div>
+        <div class="title" id="t">Select a Track</div><div class="artist">Photonic Noise</div>
+        <div class="p-bg" id="p-c"><div class="p-fill" id="p-b"></div></div>
+        <div class="time"><span id="t-c">0:00</span><span id="t-d">0:00</span></div>
+        <div class="ctrls">
+            <button class="btn" id="prev"><i data-lucide="skip-back" size="22"></i></button>
+            <button class="btn play-btn" id="play"><i data-lucide="play" size="24" id="p-i"></i></button>
+            <button class="btn" id="next"><i data-lucide="skip-forward" size="22"></i></button>
         </div>
-
-        <div class="progress-area">
-            <div class="progress-bar-container" id="progress-container">
-                <div class="progress-bar" id="progress-bar"></div>
-            </div>
-            <div class="time-box">
-                <span id="time-current">0:00</span>
-                <span id="time-duration">0:00</span>
-            </div>
-        </div>
-
-        <div class="controls">
-            <button class="btn" id="btn-prev" title="Previous"><i data-lucide="skip-back" size="24"></i></button>
-            <button class="btn btn-play-pause" id="btn-play" title="Play/Pause"><i data-lucide="play" size="28" id="play-icon"></i></button>
-            <button class="btn" id="btn-next" title="Next"><i data-lucide="skip-forward" size="24"></i></button>
-        </div>
-
-        <div class="volume-container">
-            <i data-lucide="volume-2" size="18"></i>
-            <input type="range" class="volume-slider" id="volume-slider" min="0" max="1" step="0.05" value="0.7">
-        </div>
-
-        <div class="playlist">
-            <h3>Photonic Noise Queue</h3>
-            <div id="playlist-container"></div>
-        </div>
+        <div class="vol"><i data-lucide="volume-2" size="16"></i><input type="range" class="vol-slider" id="v-s" min="0" max="1" step="0.05" value="0.7"></div>
+        <div class="list"><h3>Queue</h3><div id="l-c"></div></div>
     </div>
-
     <script>
-        /**************************************************************
-         * MASTER TRACKLIST ARRAY (ALL 23 SONGS)
-         * Updated source tracks to point specifically to your 
-         * "Photonic Noise" folder name!
-         **************************************************************/
         const trackList = [
-            { title: "Intro 1", genre: "Spoken Word / Ambient", src: "Photonic Noise/intro1.mp3" },
-            { title: "The Future is RXD", genre: "Psychedelic Trance / Funk", src: "Photonic Noise/The future is RXD.mp3" },
-            { title: "Back to G", genre: "Trance / Dubstep / Atmospheric", src: "Photonic Noise/Back to G.mp3" },
-            { title: "Radiant Blues", genre: "Chicago Blues / Slow", src: "Photonic Noise/Radiant blues.mp3" },
-            { title: "Glyph Mining", genre: "Synthwave / Cyberpunk", src: "Photonic Noise/Glyph mining.mp3" },
-            { title: "Radiant oh Radiant", genre: "Melodic Techno / Choral", src: "Photonic Noise/Radiant oh Radiant.mp3" },
-            { title: "Rad Moroder", genre: "80s Disco Synth / Electro", src: "Photonic Noise/Rad Moroder.mp3" },
-            { title: "Radiante Futuro 2", genre: "Italian Electro-Pop", src: "Photonic Noise/Radiante Futuro2.mp3" },
-            { title: "Jingle Glyphs 4", genre: "IDM / Glitch-Hop", src: "Photonic Noise/Jingle glyphs4.mp3" },
-            { title: "Radiant's Rising", genre: "Epic Orchestrational Trance", src: "Photonic Noise/Radiant's Rising.mp3" },
-            { title: "RADDD", genre: "Hardstyle / Bounce", src: "Photonic Noise/RADDD.mp3" },
-            { title: "Peer to Peer", genre: "Deep House / Chillout", src: "Photonic Noise/Peer to peer.mp3" },
-            { title: "Radiant Lovers", genre: "Lo-Fi Beats / Synth-Pop", src: "Photonic Noise/Radiant lovers.mp3" },
-            { title: "Radiant Price", genre: "Industrial / EBM", src: "Photonic Noise/Radiant Price.mp3" },
-            { title: "Radiant Army", genre: "Phonk / Aggressive Bass", src: "Photonic Noise/Radiant army.mp3" },
-            { title: "Radfire", genre: "Drum & Bass / Liquid", src: "Photonic Noise/Radfire.mp3" },
-            { title: "Radfire Dubstep", genre: "Heavy Dubstep / Brostep", src: "Photonic Noise/Radfiredubstep.mp3" },
-            { title: "Radiant Is Hardcore 1", genre: "Happy Hardcore / UK Hardcore", src: "Photonic Noise/radiant Is Hardcore1.mp3" },
+            { title: "Intro 1", src: "photonic-noise/intro1.mp3" },
+            { title: "The Future is RXD", src: "photonic-noise/The future is RXD.mp3" },
+            { title: "Back to G", src: "photonic-noise/Back to G.mp3" },
+            { title: "Radiant Blues", src: "photonic-noise/Radiant blues.mp3" },
+            { title: "Glyph Mining", src: "photonic-noise/Glyph mining.mp3" },
+            { title: "Radiant oh Radiant", src: "photonic-noise/Radiant oh Radiant.mp3" },
+            { title: "Rad Moroder", src: "photonic-noise/Rad Moroder.mp3" },
+            { title: "Radiante Futuro 2", src: "photonic-noise/Radiante Futuro2.mp3" },
+            { title: "Jingle Glyphs 4", src: "photonic-noise/Jingle glyphs4.mp3" },
+            { title: "Radiant's Rising", src: "photonic-noise/Radiant's Rising.mp3" },
+            { title: "RADDD", src: "photonic-noise/RADDD.mp3" },
+            { title: "Peer to Peer", src: "photonic-noise/Peer to peer.mp3" },
+            { title: "Radiant Lovers", src: "photonic-noise/Radiant lovers.mp3" },
+            { title: "Radiant Price", src: "photonic-noise/Radiant Price.mp3" },
+            { title: "Radiant Army", src: "photonic-noise/Radiant army.mp3" },
+            { title: "Radfire", src: "photonic-noise/Radfire.mp3" },
+            { title: "Radfire Dubstep", src: "photonic-noise/Radfiredubstep.mp3" },
+            { title: "Radiant Is Hardcore 1", src: "photonic-noise/radiant Is Hardcore1.mp3" },
+            { title: "Great Glyphening", src: "photonic-noise/Great Glyphening.mp3" },
+            { title: "The Great Glyphweird", src: "photonic-noise/The great glyphweird.mp3" },
+            { title: "The Future is RXD (Remastered)", src: "photonic-noise/The future is RXD (Remastered)123.mp3" },
+            { title: "You are Radiant", src: "photonic-noise/You are Radiant.mp3" },
+            { title: "Radiant 4th Birthday", src: "photonic-noise/Radiant 4th birthday.mp3" }
+        ];
+        let idx = 0, playing = false, aCtx = null, ana = null, fData = null, srcNode = null, setup = false;
+        const a = document.getElementById('audio'), pBtn = document.getElementById('play'), pIco = document.getElementById('p-i'), uiT = document.getElementById('t'), pBar = document.getElementById('p-b'), pCon = document.getElementById('p-c'), tCur = document.getElementById('t-c'), tDur = document.getElementById('t-d'), vSld = document.getElementById('v-s'), lCon = document.getElementById('l-c'), cv = document.getElementById('canvas'), ctx = cv.getContext('2d');
+
+        function init() { 
+            trackList.forEach((t, i) => { const d = document.createElement('div'); d.className = `item ${i===idx?'active':''}`; d.innerText = t.title; d.onclick = () => { sAudio(); idx = i; load(); play(); }; lCon.appendChild(d); });
+            load(); a.volume = vSld.value; cv.width = cv.clientWidth; cv.height = cv.clientHeight; lucide.createIcons();
+        }
+        function sAudio() {
+            if (setup) return; aCtx = new (window.AudioContext || window.webkitAudioContext)(); ana = aCtx.createAnalyser();
+            srcNode = aCtx.createMediaElementSource(a); srcNode.connect(ana); ana.connect(aCtx.destination);
+            ana.fftSize = 64; fData = new Uint8Array(ana.frequencyBinCount); setup = true; draw();
+        }
+        function draw() {
+            requestAnimationFrame(draw); if (!ana) return; ana.getByteFrequencyData(fData); ctx.clearRect(0, 0, cv.width, cv.height);
+            const w = (cv.width / ana.frequencyBinCount) * 1.4; let x = 0;
+            for (let i = 0; i < ana.frequencyBinCount; i++) {
+                let h = fData[i] * 0.65; ctx.fillStyle = `rgba(29, 185, 84, ${h / 130})`; ctx.fillRect(x, cv.height - h, w - 3, h); x += w;
+            }
+        }
+        function load() {
+            const t = trackList[idx]; a.src = encodeURI(t.src); uiT.innerText = t.title;
+            document.querySelectorAll('.item').forEach((m, i) => m.classList.toggle('active', i === idx));
+            pBar.style.width = '0%'; tCur.innerText = tDur.innerText = "0:00";
+        }
+        function play() { playing = true; if (aCtx && aCtx.state === 'suspended') aCtx.resume(); a.play().catch(e => {}); pIco.setAttribute('data-lucide', 'pause'); lucide.createIcons(); }
+        function pause() { playing = false; a.pause(); pIco.setAttribute('data-lucide', 'play'); lucide.createIcons(); }
+        const fmt = s => { const m = Math.floor(s / 60), r = Math.floor(s % 60); return `${m}:${r < 10 ? '0' : ''}${r}`; };
+        
+        pBtn.onclick = () => { sAudio(); playing ? pause() : play(); };
+        document.getElementById('next').onclick = () => { sAudio(); idx = (idx + 1) % trackList.length; load(); if (playing) play(); };
+        document.getElementById('prev').onclick = () => { sAudio(); idx = (idx - 1 + trackList.length) % trackList.length; load(); if (playing) play(); };
+        a.ontimeupdate = () => { if(a.duration) { pBar.style.width = `${(a.currentTime / a.duration) * 100}%`; tCur.innerText = fmt(a.currentTime); } };
+        a.onloadedmetadata = () => tDur.innerText = fmt(a.duration); a.onended = () => document.getElementById('next').click();
+        pCon.onclick = e => { if(a.duration) a.currentTime = (e.offsetX / pCon.clientWidth) * a.duration; };
+        vSld.oninput = e => a.volume = e.target.value; window.onresize = () => { cv.width = cv.clientWidth; cv.height = cv.clientHeight; };
+        window.onload = init;
+    </script>
+</body>
+</html>
