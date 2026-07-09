@@ -32,20 +32,20 @@
               panel: 'rgba(255, 255, 255, 0.05)',
               panelLight: 'rgba(255, 255, 255, 0.08)',
               panelBorder: 'rgba(255, 255, 255, 0.1)',
-              neon: '#39FF14',
-              neonDim: '#2bc910',
-              neonMuted: 'rgba(57, 255, 20, 0.1)',
-              accent: '#1450FF',
-              accentDim: '#0f3cc7',
-              accentMuted: 'rgba(20, 80, 255, 0.1)',
+              neon: 'var(--color-primary, #39FF14)',
+              neonDim: 'var(--color-primary-dim, #2bc910)',
+              neonMuted: 'var(--color-primary-muted, rgba(57, 255, 20, 0.1))',
+              accent: 'var(--color-accent, #1450FF)',
+              accentDim: 'var(--color-accent-dim, #0f3cc7)',
+              accentMuted: 'var(--color-accent-muted, rgba(20, 80, 255, 0.1))',
               text: '#ffffff',
               muted: 'rgba(255, 255, 255, 0.6)'
             }
           },
           boxShadow: {
-            'neon-glow': '0 0 15px rgba(57, 255, 20, 0.3)',
-            'neon-glow-strong': '0 0 25px rgba(57, 255, 20, 0.6)',
-            'accent-glow': '0 0 15px rgba(20, 80, 255, 0.3)',
+            'neon-glow': '0 0 15px var(--color-glow-shadow, rgba(57, 255, 20, 0.3))',
+            'neon-glow-strong': '0 0 25px var(--color-glow-shadow-strong, rgba(57, 255, 20, 0.6))',
+            'accent-glow': '0 0 15px var(--color-accent-glow-shadow, rgba(20, 80, 255, 0.3))',
             'glass-shadow': '0 8px 32px 0 rgba(0, 0, 0, 0.37)'
           }
         }
@@ -54,6 +54,18 @@
   </script>
 
   <style>
+    :root {
+      --color-primary: #39FF14;
+      --color-primary-dim: #2bc910;
+      --color-primary-muted: rgba(57, 255, 20, 0.1);
+      --color-glow-shadow: rgba(57, 255, 20, 0.3);
+      --color-glow-shadow-strong: rgba(57, 255, 20, 0.6);
+      --color-accent: #1450FF;
+      --color-accent-dim: #0f3cc7;
+      --color-accent-muted: rgba(20, 80, 255, 0.05);
+      --color-accent-glow-shadow: rgba(20, 80, 255, 0.3);
+    }
+
     /* Custom Scrollbar for sleek UI */
     ::-webkit-scrollbar {
       width: 6px;
@@ -67,7 +79,7 @@
       border-radius: 3px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: #39FF14;
+      background: var(--color-primary);
     }
 
     /* Range slider custom styling */
@@ -86,11 +98,11 @@
       -webkit-appearance: none;
       appearance: none;
       margin-top: -5px; /* Centers the thumb */
-      background-color: #39FF14;
+      background-color: var(--color-primary);
       height: 16px;
       width: 16px;
       border-radius: 50%;
-      box-shadow: 0 0 10px rgba(57, 255, 20, 0.6);
+      box-shadow: 0 0 10px var(--color-glow-shadow-strong);
       transition: transform 0.1s, background-color 0.1s;
     }
     input[type="range"]::-webkit-slider-thumb:hover {
@@ -109,8 +121,8 @@
 
     /* Pulsing Neon Glow */
     @keyframes pulse-glow {
-      0%, 100% { box-shadow: 0 0 15px rgba(57, 255, 20, 0.3); }
-      50% { box-shadow: 0 0 25px rgba(57, 255, 20, 0.6); }
+      0%, 100% { box-shadow: 0 0 15px var(--color-glow-shadow); }
+      50% { box-shadow: 0 0 25px var(--color-glow-shadow-strong); }
     }
     .pulse-neon {
       animation: pulse-glow 3s infinite;
@@ -118,7 +130,7 @@
 
     /* Mesh background overlay styling */
     .bg-mesh {
-      background: radial-gradient(circle at 20% 30%, rgba(57, 255, 20, 0.1) 0, transparent 50%), radial-gradient(circle at 80% 70%, rgba(20, 80, 255, 0.05) 0, transparent 50%);
+      background: radial-gradient(circle at 20% 30%, var(--color-primary-muted) 0, transparent 50%), radial-gradient(circle at 80% 70%, var(--color-accent-muted) 0, transparent 50%);
     }
 
     /* Cosmic Earth background image */
@@ -136,70 +148,84 @@
   <div class="fixed inset-0 bg-mesh pointer-events-none z-[-1]"></div>
 
   <!-- Header Section -->
-  <header class="border-b border-cyber-panelBorder bg-cyber-panel backdrop-blur-xl sticky top-0 z-10 px-6 py-4">
-    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-      <div class="flex items-center gap-3">
-        <div class="p-2.5 bg-cyber-neonMuted rounded-xl border border-cyber-neon/30 text-cyber-neon shadow-neon-glow">
-          <i data-lucide="waves" class="w-6 h-6 animate-pulse"></i>
+  <header class="border-b border-cyber-panelBorder bg-cyber-panel/80 backdrop-blur-xl sticky top-0 z-10 px-4 py-3 md:px-6 md:py-4">
+    <div class="max-w-7xl mx-auto flex flex-row justify-between items-center gap-2">
+      <div class="flex items-center gap-2 sm:gap-3">
+        <div class="p-2 bg-cyber-neonMuted rounded-lg sm:rounded-xl border border-cyber-neon/30 text-cyber-neon shadow-neon-glow flex-shrink-0">
+          <i data-lucide="waves" class="w-5 h-5 sm:w-6 sm:h-6 animate-pulse"></i>
         </div>
         <div>
-          <h1 class="text-2xl font-bold font-display tracking-wider text-white flex items-center gap-2">
+          <h1 class="text-lg sm:text-xl md:text-2xl font-bold font-display tracking-wider text-white flex items-center gap-1 sm:gap-2">
             PHOTONIC <span class="text-cyber-neon">NOISE</span>
           </h1>
-          <p class="text-xs font-mono text-cyber-muted tracking-tight">HQ SYNTHETIC SIGNAL STREAMER</p>
+          <p class="text-[9px] sm:text-xs font-mono text-cyber-muted tracking-tight">HQ SYNTHETIC SIGNAL STREAMER</p>
         </div>
       </div>
       
       <!-- Top Badges / Source Status -->
-      <div class="flex items-center gap-3 font-mono text-xs">
-        <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-cyber-panelLight border border-cyber-panelBorder">
-          <span class="w-2 h-2 rounded-full bg-cyber-neon animate-ping"></span>
-          <span class="text-cyber-neon">SYSTEM: ONLINE</span>
+      <div class="flex items-center gap-2 font-mono text-[10px] sm:text-xs">
+        <div class="flex items-center gap-1.5 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full bg-cyber-panelLight border border-cyber-panelBorder">
+          <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-cyber-neon animate-ping"></span>
+          <span class="text-cyber-neon">LIVE</span>
         </div>
       </div>
     </div>
   </header>
 
   <!-- Main Content Body -->
-  <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+  <main class="flex-grow max-w-7xl w-full mx-auto p-3 sm:p-4 md:p-6 flex flex-col gap-4">
     
-    <!-- LEFT PANEL: Visualizer & Active Player Controls (8 cols on lg) -->
-    <section class="lg:col-span-8 flex flex-col gap-6">
+    <!-- Mobile Tabs Navigation Selector (visible only on mobile/tablet) -->
+    <div class="lg:hidden flex bg-black/40 backdrop-blur-md p-1 rounded-xl border border-cyber-panelBorder/60 gap-1 select-none">
+      <button id="tab-btn-player" onclick="switchMobileTab('player')" class="flex-1 py-2 text-xs font-mono font-semibold rounded-lg text-cyber-neon bg-cyber-neonMuted/30 transition flex items-center justify-center gap-1.5" title="View Player Panel">
+        <i data-lucide="music" class="w-3.5 h-3.5"></i> PLAYER
+      </button>
+      <button id="tab-btn-playlist" onclick="switchMobileTab('playlist')" class="flex-1 py-2 text-xs font-mono font-semibold rounded-lg text-cyber-muted hover:text-white transition flex items-center justify-center gap-1.5" title="View Playlist Panel">
+        <i data-lucide="list-music" class="w-3.5 h-3.5"></i> PLAYLIST
+      </button>
+    </div>
+
+    <!-- Layout Grid (Always side-by-side on lg: screens, tabbed/hidden on smaller) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 w-full">
       
-      <!-- VISUALIZER DISPLAY CARD -->
-      <div id="visualizer-container" class="relative bg-cyber-panel backdrop-blur-xl rounded-[24px] border border-cyber-panelBorder overflow-hidden flex flex-col h-[320px] md:h-[420px] shadow-glass-shadow">
+      <!-- LEFT PANEL: Visualizer & Active Player Controls (8 cols on lg) -->
+      <section id="mobile-tab-player" class="lg:col-span-8 flex flex-col gap-4 sm:gap-6">
         
-        <!-- Canvas Element -->
-        <canvas id="visualizer" class="w-full flex-grow bg-gradient-to-b from-cyber-bg to-cyber-panel cursor-pointer"></canvas>
-        
-        <!-- Overlay HUD: Visualizer Controls & Info -->
-        <div class="absolute inset-x-0 top-0 p-4 flex justify-between items-start pointer-events-none">
-          <div class="bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-lg border border-cyber-panelBorder flex flex-col pointer-events-auto">
-            <span class="text-[10px] font-mono text-cyber-muted">ACTIVE VISUALIZER</span>
-            <span id="hud-visualizer-mode" class="text-xs font-mono font-bold text-cyber-neon">FFT FREQUENCY BARS</span>
-          </div>
-
-          <div class="flex items-center gap-2 pointer-events-auto">
-            <!-- Theme Cycle Button -->
-            <button onclick="cycleVisualizerTheme()" id="btn-theme-cycle" class="flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-mono rounded-lg bg-black/60 backdrop-blur-md border border-cyber-panelBorder/60 text-cyber-neon hover:text-white hover:bg-cyber-panelLight transition" title="Cycle Visualizer Theme">
-              <i data-lucide="palette" class="w-3.5 h-3.5 text-cyber-neon" id="icon-theme"></i>
-              <span id="label-theme">THEME: GREEN</span>
-            </button>
-
-            <!-- Mode Switcher -->
-            <div class="flex bg-black/60 backdrop-blur-md p-1 rounded-lg border border-cyber-panelBorder gap-1">
-              <button onclick="setVisualizerMode('bars')" id="btn-mode-bars" class="px-2 py-1 text-[11px] font-mono rounded hover:bg-cyber-panelLight text-cyber-neon font-semibold transition" title="Frequency Bars">
-                BARS
+        <!-- VISUALIZER DISPLAY CARD -->
+        <div id="visualizer-container" class="relative bg-cyber-panel backdrop-blur-xl rounded-[20px] sm:rounded-[24px] border border-cyber-panelBorder overflow-hidden flex flex-col h-[220px] sm:h-[320px] md:h-[420px] shadow-glass-shadow">
+          
+          <!-- Canvas Element -->
+          <canvas id="visualizer" class="w-full flex-grow bg-gradient-to-b from-cyber-bg to-cyber-panel cursor-pointer"></canvas>
+          
+          <!-- Overlay HUD: Visualizer Controls & Info -->
+          <div class="absolute inset-x-0 top-0 p-3 sm:p-4 flex justify-between items-start pointer-events-none">
+            <div class="bg-black/60 backdrop-blur-md px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg border border-cyber-panelBorder flex flex-col pointer-events-auto">
+              <span class="text-[9px] sm:text-[10px] font-mono text-cyber-muted">ACTIVE VISUALIZER</span>
+              <span id="hud-visualizer-mode" class="text-[10px] sm:text-xs font-mono font-bold text-cyber-neon">FFT FREQUENCY BARS</span>
+            </div>
+  
+            <div class="flex items-center gap-1.5 sm:gap-2 pointer-events-auto">
+              <!-- Theme Cycle Button -->
+              <button onclick="cycleVisualizerTheme()" id="btn-theme-cycle" class="flex items-center gap-1 sm:gap-1.5 px-2 py-1 sm:px-2.5 sm:py-1.5 text-[10px] sm:text-[11px] font-mono rounded-lg bg-black/60 backdrop-blur-md border border-cyber-panelBorder/60 text-cyber-neon hover:text-white hover:bg-cyber-panelLight transition" title="Cycle Visualizer Theme">
+                <i data-lucide="palette" class="w-3 h-3 sm:w-3.5 sm:h-3.5 text-cyber-neon" id="icon-theme"></i>
+                <span id="label-theme" class="hidden sm:inline">THEME: GREEN</span>
+                <span id="label-theme-mobile" class="sm:hidden">THEME</span>
               </button>
-              <button onclick="setVisualizerMode('wave')" id="btn-mode-wave" class="px-2 py-1 text-[11px] font-mono rounded hover:bg-cyber-panelLight text-cyber-muted transition" title="Waveform Oscilloscope">
-                WAVE
-              </button>
-              <button onclick="setVisualizerMode('circle')" id="btn-mode-circle" class="px-2 py-1 text-[11px] font-mono rounded hover:bg-cyber-panelLight text-cyber-muted transition" title="Dynamic Radial Ring">
-                RING
-              </button>
+  
+              <!-- Mode Switcher -->
+              <div class="flex bg-black/60 backdrop-blur-md p-0.5 sm:p-1 rounded-lg border border-cyber-panelBorder gap-0.5 sm:gap-1">
+                <button onclick="setVisualizerMode('bars')" id="btn-mode-bars" class="px-1.5 py-0.5 sm:px-2 sm:py-1 text-[10px] sm:text-[11px] font-mono rounded hover:bg-cyber-panelLight text-cyber-neon font-semibold transition" title="Frequency Bars">
+                  BARS
+                </button>
+                <button onclick="setVisualizerMode('wave')" id="btn-mode-wave" class="px-1.5 py-0.5 sm:px-2 sm:py-1 text-[10px] sm:text-[11px] font-mono rounded hover:bg-cyber-panelLight text-cyber-muted transition" title="Waveform Oscilloscope">
+                  WAVE
+                </button>
+                <button onclick="setVisualizerMode('circle')" id="btn-mode-circle" class="px-1.5 py-0.5 sm:px-2 sm:py-1 text-[10px] sm:text-[11px] font-mono rounded hover:bg-cyber-panelLight text-cyber-muted transition" title="Dynamic Radial Ring">
+                  RING
+                </button>
+              </div>
             </div>
           </div>
-        </div>
 
         <!-- Suspended Audio Warning Overlay -->
         <div id="audio-warning-overlay" class="absolute inset-0 bg-black/85 backdrop-blur-sm flex flex-col justify-center items-center text-center p-6 transition-all duration-300">
@@ -254,26 +280,26 @@
       </div>
 
       <!-- MAIN CONTROLLER CARD -->
-      <div class="bg-cyber-panel backdrop-blur-xl rounded-[24px] border border-cyber-panelBorder p-5 md:p-6 flex flex-col gap-6 shadow-glass-shadow relative overflow-hidden">
+      <div class="bg-cyber-panel backdrop-blur-xl rounded-[20px] sm:rounded-[24px] border border-cyber-panelBorder p-4 sm:p-5 md:p-6 flex flex-col gap-4 sm:gap-6 shadow-glass-shadow relative overflow-hidden">
         
         <!-- Track Details Banner -->
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-3 sm:gap-4">
           <!-- Artwork Ring Indicator -->
           <div class="relative flex-shrink-0">
-            <div id="artwork-glowing-ring" class="w-16 h-16 rounded-full border-2 border-cyber-panelBorder bg-cyber-bg flex items-center justify-center text-cyber-neon transition-all duration-300 shadow-neon-glow">
-              <i data-lucide="music" id="artwork-icon" class="w-6 h-6"></i>
+            <div id="artwork-glowing-ring" class="w-12 h-12 sm:w-16 sm:h-16 rounded-full border-2 border-cyber-panelBorder bg-cyber-bg flex items-center justify-center text-cyber-neon transition-all duration-300 shadow-neon-glow">
+              <i data-lucide="music" id="artwork-icon" class="w-5 h-5 sm:w-6 sm:h-6"></i>
             </div>
             <!-- Spinner Overlay for Playing State -->
-            <div id="artwork-disc-spinner" class="absolute inset-0 w-16 h-16 rounded-full border-2 border-dashed border-cyber-neon/40 animate-spin-slow opacity-0 transition-opacity duration-300 pointer-events-none"></div>
+            <div id="artwork-disc-spinner" class="absolute inset-0 w-12 h-12 sm:w-16 sm:h-16 rounded-full border-2 border-dashed border-cyber-neon/40 animate-spin-slow opacity-0 transition-opacity duration-300 pointer-events-none"></div>
           </div>
 
           <div id="metadata-container" class="flex-grow min-w-0 transition-opacity duration-300 ease-in-out opacity-100">
-            <div class="flex items-center gap-2">
-              <span id="player-track-genre" class="text-[10px] font-mono bg-cyber-neonMuted text-cyber-neon px-2 py-0.5 rounded border border-cyber-neon/20 uppercase tracking-wider">SYNTHWAVE</span>
-              <span id="player-track-source" class="text-[10px] font-mono bg-cyber-panelLight text-cyber-muted px-2 py-0.5 rounded border border-cyber-panelBorder uppercase tracking-wider">LOCAL</span>
+            <div class="flex items-center gap-1.5 sm:gap-2">
+              <span id="player-track-genre" class="text-[9px] sm:text-[10px] font-mono bg-cyber-neonMuted text-cyber-neon px-2 py-0.5 rounded border border-cyber-neon/20 uppercase tracking-wider">SYNTHWAVE</span>
+              <span id="player-track-source" class="text-[9px] sm:text-[10px] font-mono bg-cyber-panelLight text-cyber-muted px-2 py-0.5 rounded border border-cyber-panelBorder uppercase tracking-wider">LOCAL</span>
             </div>
-            <h2 id="player-track-title" class="text-lg md:text-xl font-bold font-display tracking-tight text-white mt-1 truncate">Photonic Pulse</h2>
-            <p id="player-track-artist" class="text-xs text-cyber-muted truncate mt-0.5">Photonic Noise &bull; <span id="player-track-album" class="italic">Photonic Noise EP</span></p>
+            <h2 id="player-track-title" class="text-base sm:text-lg md:text-xl font-bold font-display tracking-tight text-white mt-1 truncate">Photonic Pulse</h2>
+            <p id="player-track-artist" class="text-[11px] sm:text-xs text-cyber-muted truncate mt-0.5">Photonic Noise &bull; <span id="player-track-album" class="italic">Photonic Noise EP</span></p>
           </div>
         </div>
 
@@ -281,12 +307,12 @@
         <audio id="audio-element" crossorigin="anonymous"></audio>
 
         <!-- Timeline scrubbing bar -->
-        <div class="flex flex-col gap-1.5">
-          <div class="flex justify-between items-center text-xs font-mono text-cyber-muted">
+        <div class="flex flex-col gap-1 sm:gap-1.5">
+          <div class="flex justify-between items-center text-[10px] sm:text-xs font-mono text-cyber-muted">
             <span id="player-time-current">00:00</span>
             <span id="player-time-duration">00:00</span>
           </div>
-          <div class="relative w-full flex items-center group">
+          <div class="relative w-full flex items-center group py-1.5">
             <input type="range" id="timeline-slider" min="0" max="100" value="0" class="w-full h-2 rounded-lg cursor-pointer">
             <!-- Glowing Progress Fill Indicator under Slider -->
             <div id="timeline-progress-fill" class="absolute left-0 top-1/2 -translate-y-1/2 h-[6px] rounded-l-lg bg-cyber-neon/50 pointer-events-none" style="width: 0%"></div>
@@ -294,41 +320,44 @@
         </div>
 
         <!-- Primary playback control buttons -->
-        <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+        <div class="flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-6">
           
-          <!-- Shuffle and Loop toggles -->
-          <div class="flex items-center gap-3">
-            <button id="btn-shuffle" onclick="toggleShuffle()" class="p-2.5 rounded-lg bg-cyber-panelLight hover:bg-cyber-panelBorder text-cyber-muted hover:text-white transition group relative" title="Toggle Shuffle">
+          <!-- Unified Main Playback Row: Shuffle, Prev, Play, Next, Loop -->
+          <div class="flex items-center justify-between sm:justify-center gap-2.5 sm:gap-4 w-full sm:w-auto">
+            <!-- Shuffle -->
+            <button id="btn-shuffle" onclick="toggleShuffle()" class="p-3 sm:p-2.5 rounded-full sm:rounded-lg bg-cyber-panelLight hover:bg-cyber-panelBorder text-cyber-muted hover:text-white transition group relative flex-shrink-0" title="Toggle Shuffle">
               <i data-lucide="shuffle" class="w-4 h-4"></i>
               <span class="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-cyber-neon opacity-0 transition-opacity" id="shuffle-active-dot"></span>
             </button>
-            <button id="btn-loop" onclick="toggleLoop()" class="p-2.5 rounded-lg bg-cyber-panelLight hover:bg-cyber-panelBorder text-cyber-muted hover:text-white transition group relative" title="Toggle Loop Mode">
+
+            <!-- Prev -->
+            <button onclick="playPrev()" class="p-3 sm:p-2.5 rounded-full bg-cyber-panelLight hover:bg-cyber-panelBorder text-cyber-text hover:text-cyber-neon transition transform active:scale-95 border border-cyber-panelBorder/50 flex-shrink-0" title="Previous Track">
+              <i data-lucide="skip-back" class="w-4.5 h-4.5 sm:w-5 sm:h-5 fill-current"></i>
+            </button>
+            
+            <!-- Play/Pause (Always large, touch friendly) -->
+            <button id="btn-play-pause" onclick="togglePlayPause()" class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-cyber-neon hover:bg-white text-black flex items-center justify-center transition transform active:scale-95 shadow-neon-glow hover:shadow-neon-glow-strong flex-shrink-0" title="Play / Pause">
+              <i data-lucide="play" id="icon-play-pause" class="w-6 h-6 fill-black ml-0.5"></i>
+            </button>
+            
+            <!-- Next -->
+            <button onclick="playNext()" class="p-3 sm:p-2.5 rounded-full bg-cyber-panelLight hover:bg-cyber-panelBorder text-cyber-text hover:text-cyber-neon transition transform active:scale-95 border border-cyber-panelBorder/50 flex-shrink-0" title="Next Track">
+              <i data-lucide="skip-forward" class="w-4.5 h-4.5 sm:w-5 sm:h-5 fill-current"></i>
+            </button>
+
+            <!-- Loop -->
+            <button id="btn-loop" onclick="toggleLoop()" class="p-3 sm:p-2.5 rounded-full sm:rounded-lg bg-cyber-panelLight hover:bg-cyber-panelBorder text-cyber-muted hover:text-white transition group relative flex-shrink-0" title="Toggle Loop Mode">
               <i data-lucide="repeat" class="w-4 h-4" id="icon-loop"></i>
               <span class="absolute -top-1 -right-1 text-[8px] font-mono px-1 rounded-full bg-cyber-neon text-black font-bold scale-0 transition-transform" id="loop-active-badge">1</span>
             </button>
           </div>
 
-          <!-- Main Prev / Play / Next Circle Controls -->
-          <div class="flex items-center gap-5">
-            <button onclick="playPrev()" class="p-3 rounded-full bg-cyber-panelLight hover:bg-cyber-panelBorder text-cyber-text hover:text-cyber-neon transition transform active:scale-95 border border-cyber-panelBorder" title="Previous Track">
-              <i data-lucide="skip-back" class="w-5 h-5 fill-current"></i>
-            </button>
-            
-            <button id="btn-play-pause" onclick="togglePlayPause()" class="w-14 h-14 rounded-full bg-cyber-neon hover:bg-white text-black flex items-center justify-center transition transform active:scale-95 shadow-neon-glow hover:shadow-neon-glow-strong" title="Play / Pause">
-              <i data-lucide="play" id="icon-play-pause" class="w-6 h-6 fill-black ml-0.5"></i>
-            </button>
-            
-            <button onclick="playNext()" class="p-3 rounded-full bg-cyber-panelLight hover:bg-cyber-panelBorder text-cyber-text hover:text-cyber-neon transition transform active:scale-95 border border-cyber-panelBorder" title="Next Track">
-              <i data-lucide="skip-forward" class="w-5 h-5 fill-current"></i>
-            </button>
-          </div>
-
-          <!-- Volume Controls -->
-          <div class="flex items-center gap-2.5 w-full md:w-44">
-            <button id="btn-mute" onclick="toggleMute()" class="p-2.5 rounded-lg text-cyber-muted hover:text-white transition" title="Mute/Unmute">
+          <!-- Volume Controls (Compact on mobile) -->
+          <div class="flex items-center gap-2 w-full sm:w-40 md:w-44 bg-black/25 p-1.5 sm:p-0 rounded-xl border border-cyber-panelBorder/40 sm:border-0">
+            <button id="btn-mute" onclick="toggleMute()" class="p-2 rounded-lg text-cyber-muted hover:text-white transition flex-shrink-0" title="Mute/Unmute">
               <i data-lucide="volume-2" id="icon-volume" class="w-4 h-4"></i>
             </button>
-            <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="0.8" class="w-full h-1 bg-cyber-panelBorder rounded-lg" title="Volume">
+            <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="0.8" class="w-full h-1 bg-cyber-panelBorder rounded-lg cursor-pointer" title="Volume">
           </div>
 
         </div>
@@ -338,15 +367,15 @@
     </section>
 
     <!-- RIGHT PANEL: Interactive Playlist Queue & File Upload (4 cols on lg) -->
-    <section class="lg:col-span-4 flex flex-col gap-6">
+    <section id="mobile-tab-playlist" class="lg:col-span-4 flex flex-col gap-4 sm:gap-6 hidden lg:flex">
       
       <!-- PLAYLIST CARD -->
-      <div class="bg-cyber-panel backdrop-blur-xl rounded-[24px] border border-cyber-panelBorder flex flex-col h-[600px] md:h-[660px] shadow-glass-shadow overflow-hidden">
+      <div class="bg-cyber-panel backdrop-blur-xl rounded-[20px] sm:rounded-[24px] border border-cyber-panelBorder flex flex-col h-[480px] sm:h-[600px] md:h-[660px] shadow-glass-shadow overflow-hidden">
         
         <!-- Header Info & Search -->
         <div class="p-4 bg-cyber-panelLight border-b border-cyber-panelBorder flex flex-col gap-3">
           <div class="flex justify-between items-center">
-            <h3 class="font-bold font-display tracking-wide text-white text-sm flex items-center gap-1.5">
+            <h3 class="font-bold font-display tracking-wide text-white text-sm flex items-center gap-1.5 animate-pulse">
               <i data-lucide="list-music" class="text-cyber-neon w-4 h-4"></i>
               PLAYLIST QUEUE
             </h3>
@@ -390,6 +419,8 @@
       </div>
 
     </section>
+
+  </div> <!-- End Layout Grid -->
 
   </main>
 
@@ -536,8 +567,11 @@
       // Load first track into player without playing it
       loadTrack(currentTrackIndex, false);
       
-      // Build visual playlist list
-      renderPlaylist();
+      // Setup default theme CSS variables and UI
+      updateVisualizerThemeUI();
+
+      // Setup default mobile tab
+      switchMobileTab('player');
       
       // Initialize Canvas size & setup ResizeObserver
       resizeCanvas();
@@ -1087,8 +1121,39 @@
       });
     }
 
+    function switchMobileTab(tab) {
+      const playerTab = document.getElementById('mobile-tab-player');
+      const playlistTab = document.getElementById('mobile-tab-playlist');
+      const btnPlayer = document.getElementById('tab-btn-player');
+      const btnPlaylist = document.getElementById('tab-btn-playlist');
+      
+      if (!playerTab || !playlistTab || !btnPlayer || !btnPlaylist) return;
+
+      if (tab === 'player') {
+        playerTab.classList.remove('hidden');
+        playlistTab.classList.add('hidden');
+        playlistTab.classList.remove('flex');
+
+        // Update button styles
+        btnPlayer.className = "flex-1 py-2 text-xs font-mono font-semibold rounded-lg text-cyber-neon bg-cyber-neonMuted/30 transition flex items-center justify-center gap-1.5 border border-cyber-neon/10";
+        btnPlaylist.className = "flex-1 py-2 text-xs font-mono font-semibold rounded-lg text-cyber-muted hover:text-white transition flex items-center justify-center gap-1.5";
+      } else {
+        playerTab.classList.add('hidden');
+        playlistTab.classList.remove('hidden');
+        playlistTab.classList.add('flex');
+
+        // Update button styles
+        btnPlayer.className = "flex-1 py-2 text-xs font-mono font-semibold rounded-lg text-cyber-muted hover:text-white transition flex items-center justify-center gap-1.5";
+        btnPlaylist.className = "flex-1 py-2 text-xs font-mono font-semibold rounded-lg text-cyber-neon bg-cyber-neonMuted/30 transition flex items-center justify-center gap-1.5 border border-cyber-neon/10";
+      }
+    }
+
     function cycleVisualizerTheme() {
       currentThemeIndex = (currentThemeIndex + 1) % visualizerThemes.length;
+      updateVisualizerThemeUI();
+    }
+
+    function updateVisualizerThemeUI() {
       const theme = visualizerThemes[currentThemeIndex];
       
       const themeLabel = document.getElementById('label-theme');
@@ -1113,6 +1178,22 @@
       if (themeBtn) {
         themeBtn.style.borderColor = theme.primary + '40'; // low opacity border
       }
+
+      // Update CSS variables on :root dynamically for instant UI response!
+      const root = document.documentElement;
+      root.style.setProperty('--color-primary', theme.primary);
+      root.style.setProperty('--color-primary-dim', theme.gradientMid);
+      root.style.setProperty('--color-primary-muted', theme.primary + '1a'); // ~10% opacity
+      root.style.setProperty('--color-glow-shadow', theme.primary + '4d'); // ~30% opacity
+      root.style.setProperty('--color-glow-shadow-strong', theme.primary + '99'); // ~60% opacity
+      
+      root.style.setProperty('--color-accent', theme.accent);
+      root.style.setProperty('--color-accent-dim', theme.accent + 'cc'); // ~80% opacity
+      root.style.setProperty('--color-accent-muted', theme.accent + '0d'); // ~5% opacity
+      root.style.setProperty('--color-accent-glow-shadow', theme.accent + '4d'); // ~30% opacity
+
+      // Re-render playlist with updated highlighting colors
+      renderPlaylist();
     }
 
     function startVisualizerLoop() {
