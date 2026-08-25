@@ -290,26 +290,14 @@
               </button>
   
               <!-- Mode Switcher -->
-              <div class="flex bg-black/60 backdrop-blur-md p-0.5 sm:p-1 rounded-lg border border-cyber-panelBorder gap-0.5 sm:gap-1 overflow-x-auto max-w-[140px] sm:max-w-none no-scrollbar">
-  <button onclick="setVisualizerMode('bars')" id="btn-mode-bars" class="px-1.5 py-0.5 sm:px-2 sm:py-1 text-[10px] sm:text-[11px] font-mono rounded hover:bg-cyber-panelLight text-cyber-neon font-semibold transition" title="Frequency Bars">
-    BARS
-  </button>
-  <button onclick="setVisualizerMode('wave')" id="btn-mode-wave" class="px-1.5 py-0.5 sm:px-2 sm:py-1 text-[10px] sm:text-[11px] font-mono rounded hover:bg-cyber-panelLight text-cyber-muted transition" title="Waveform Oscilloscope">
-    WAVE
-  </button>
-  <button onclick="setVisualizerMode('circle')" id="btn-mode-circle" class="px-1.5 py-0.5 sm:px-2 sm:py-1 text-[10px] sm:text-[11px] font-mono rounded hover:bg-cyber-panelLight text-cyber-muted transition" title="Dynamic Radial Ring">
-    RING
-  </button>
-  <button onclick="setVisualizerMode('particles')" id="btn-mode-particles" class="px-1.5 py-0.5 sm:px-2 sm:py-1 text-[10px] sm:text-[11px] font-mono rounded hover:bg-cyber-panelLight text-cyber-muted transition" title="Photon Beat Particles">
-    BEAT
-  </button>
-  <button onclick="setVisualizerMode('mirrored')" id="btn-mode-mirrored" class="px-1.5 py-0.5 sm:px-2 sm:py-1 text-[10px] sm:text-[11px] font-mono rounded hover:bg-cyber-panelLight text-cyber-muted transition" title="Mirrored Laser Scope">
-    SCOPE
-  </button>              
+             <div class="flex bg-black/60 backdrop-blur-md p-0.5 sm:p-1 rounded-lg border border-cyber-panelBorder gap-0.5 sm:gap-1">
+      <button onclick="setVisualizerMode('bars')" id="btn-mode-bars" ...>BARS</button>
+      <button onclick="setVisualizerMode('wave')" id="btn-mode-wave" ...>WAVE</button>
+      <button onclick="setVisualizerMode('circle')" id="btn-mode-circle" ...>RING</button>
+    </div>
+
+  </div>
 </div>
-            
-            </div>
-          </div>
 
         <!-- Suspended Audio Warning Overlay -->
         <div id="audio-warning-overlay" class="absolute inset-0 bg-black/85 backdrop-blur-sm flex flex-col justify-center items-center text-center p-6 transition-all duration-300">
