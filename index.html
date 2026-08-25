@@ -290,17 +290,24 @@
               </button>
   
               <!-- Mode Switcher -->
-              <div class="flex bg-black/60 backdrop-blur-md p-0.5 sm:p-1 rounded-lg border border-cyber-panelBorder gap-0.5 sm:gap-1">
-                <button onclick="setVisualizerMode('bars')" id="btn-mode-bars" class="px-1.5 py-0.5 sm:px-2 sm:py-1 text-[10px] sm:text-[11px] font-mono rounded hover:bg-cyber-panelLight text-cyber-neon font-semibold transition" title="Frequency Bars">
-                  BARS
-                </button>
-                <button onclick="setVisualizerMode('wave')" id="btn-mode-wave" class="px-1.5 py-0.5 sm:px-2 sm:py-1 text-[10px] sm:text-[11px] font-mono rounded hover:bg-cyber-panelLight text-cyber-muted transition" title="Waveform Oscilloscope">
-                  WAVE
-                </button>
-                <button onclick="setVisualizerMode('circle')" id="btn-mode-circle" class="px-1.5 py-0.5 sm:px-2 sm:py-1 text-[10px] sm:text-[11px] font-mono rounded hover:bg-cyber-panelLight text-cyber-muted transition" title="Dynamic Radial Ring">
-                  RING
-                </button>
-              </div>
+              <div class="flex bg-black/60 backdrop-blur-md p-0.5 sm:p-1 rounded-lg border border-cyber-panelBorder gap-0.5 sm:gap-1 overflow-x-auto max-w-[140px] sm:max-w-none no-scrollbar">
+  <button onclick="setVisualizerMode('bars')" id="btn-mode-bars" class="px-1.5 py-0.5 sm:px-2 sm:py-1 text-[10px] sm:text-[11px] font-mono rounded hover:bg-cyber-panelLight text-cyber-neon font-semibold transition" title="Frequency Bars">
+    BARS
+  </button>
+  <button onclick="setVisualizerMode('wave')" id="btn-mode-wave" class="px-1.5 py-0.5 sm:px-2 sm:py-1 text-[10px] sm:text-[11px] font-mono rounded hover:bg-cyber-panelLight text-cyber-muted transition" title="Waveform Oscilloscope">
+    WAVE
+  </button>
+  <button onclick="setVisualizerMode('circle')" id="btn-mode-circle" class="px-1.5 py-0.5 sm:px-2 sm:py-1 text-[10px] sm:text-[11px] font-mono rounded hover:bg-cyber-panelLight text-cyber-muted transition" title="Dynamic Radial Ring">
+    RING
+  </button>
+  <button onclick="setVisualizerMode('particles')" id="btn-mode-particles" class="px-1.5 py-0.5 sm:px-2 sm:py-1 text-[10px] sm:text-[11px] font-mono rounded hover:bg-cyber-panelLight text-cyber-muted transition" title="Photon Beat Particles">
+    BEAT
+  </button>
+  <button onclick="setVisualizerMode('mirrored')" id="btn-mode-mirrored" class="px-1.5 py-0.5 sm:px-2 sm:py-1 text-[10px] sm:text-[11px] font-mono rounded hover:bg-cyber-panelLight text-cyber-muted transition" title="Mirrored Laser Scope">
+    SCOPE
+  </button>              
+</div>
+            
             </div>
           </div>
 
@@ -581,6 +588,42 @@
 
     // Visualizer Themes Configuration
     const visualizerThemes = [
+      {
+    name: 'RADIANT RXD',
+    primary: '#00E5FF',      // Radiant Photonic Cyan
+    accent: '#39FF14',       // RXD Neon Green Accent
+    glow: '#00E5FF',
+    gradientStart: 'rgba(0, 229, 255, 0.05)',
+    gradientMid: '#0088ff',
+    gradientEnd: '#00E5FF'
+  },
+  {
+    name: 'GLYPH MATRIX',
+    primary: '#39FF14',      // Matrix Green
+    accent: '#00E5FF',       // Cyan Accent
+    glow: '#39FF14',
+    gradientStart: 'rgba(57, 255, 20, 0.05)',
+    gradientMid: '#1da807',
+    gradientEnd: '#39FF14'
+  },
+  {
+    name: 'PHOTON SUNSET',
+    primary: '#FF0055',      // Deep Hot Pink
+    accent: '#FFE600',       // Electric Yellow
+    glow: '#FF0055',
+    gradientStart: 'rgba(255, 0, 85, 0.05)',
+    gradientMid: '#d10074',
+    gradientEnd: '#FF0055'
+  },
+  {
+    name: 'COSMIC RXD',
+    primary: '#7B2CBF',      // Deep Violet
+    accent: '#00E5FF',       // Radiant Cyan Accent
+    glow: '#7B2CBF',
+    gradientStart: 'rgba(123, 44, 191, 0.05)',
+    gradientMid: '#9d4edd',
+    gradientEnd: '#7B2CBF'
+  },
       {
         name: 'GREEN',
         primary: '#39FF14',
